@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
 import TodoForm from "./components/todo-form";
+import Card from "./components/card";
 
 const LOCAL_STORAGE_KEY = "todo";
 
 function App() {
-  const [todos, setTodos] = useState([]);
-
-  useEffect(() => {
-    const storageTodos = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-    if (storageTodos) {
-      setTodos(storageTodos);
-    }
-  }, []);
+  const [todos, setTodos] = useState(() => {
+    const savedTodos = localStorage.getItem(LOCAL_STORAGE_KEY);
+    return savedTodos ? JSON.parse(savedTodos) : [];
+  });
 
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todos));
@@ -21,23 +18,32 @@ function App() {
     setTodos([todo, ...todos]);
   }
 
-  function toggleComplete(id) {
+  const removeTodo = (todoId) => {
+    setTodos(todos.filter((todo) => todo.id !== todoId));
+  };
+
+  const handleCheckBox = (todoId, taskIndex) => {
     setTodos(
       todos.map((todo) => {
-        if (todo.id === id) {
-          return {
-            ...todo,
-            completed: !todo.completed,
-          };
+        if (todo.id === todoId) {
+          const updatedTasks = todo.tasks.map((task, index) => {
+            if (index === taskIndex) {
+              return { ...task, completed: !task.completed };
+            }
+            return task;
+          });
+          return { ...todo, tasks: updatedTasks };
         }
         return todo;
       })
     );
-  }
+  };
 
-  function removeTodo(id) {
-    setTodos(todos.filter((todo) => todo.id != id));
-  }
+  const waitingTodos = todos.filter((todo) => todo.taskStatus === "waiting");
+  const inProgressTodos = todos.filter(
+    (todo) => todo.taskStatus === "in progress"
+  );
+  const doneTodos = todos.filter((todo) => todo.taskStatus === "done");
 
   return (
     <div className="min-h-screen w-full bg-zinc-900 text-white">
@@ -49,19 +55,43 @@ function App() {
           <p>Click an existing task to add additional context or subtasks.</p>
         </article>
       </main>
-      <TodoForm />
-      <div className="w-full h-full overflow-y-auto grid grid-cols-3 gap-4 max-w-screen-lg mx-auto my-4 px-4 md:px-0">
-        <div className="w-full border rounded shadow-sm hover:shadow-md hover:cursor-grab active:cursor-grabbing border-zinc-700">
-          <h1 className="px-4 py-2 font-medium rounded-t overflow-hidden truncate">
-            Title
-          </h1>
-          <p className="p-4 bg-zinc-800 rounded-b overflow-x-hidden truncate">
-            Lorem ipsum dolor, sit amet consectetuadipisicing elit. Aperiam odio
-            tenetur quasi exercitationem voluptas porro ea quas ratione,
-            consequuntur quisquam beatae in voluptatem. Ducimus repellendus
-            excepturi vero reprehenderit magnam? Lorem ipsum dolor sit amet,
-            consectetur adipisicing elit.
-          </p>
+      <TodoForm addTodo={addTodo} />
+      <div className="grid grid-cols-3 gap-4 max-w-screen-lg mx-auto my-4 px-4 md:px-0">
+        {/* Column for 'Waiting' tasks */}
+        <div className="w-full">
+          <h2 className="text-xl font-bold text-zinc-200 mb-2">Waiting</h2>
+          {waitingTodos.map((todo) => (
+            <Card
+              key={todo.id}
+              todo={todo}
+              handleCheckBox={handleCheckBox}
+              removeTodo={removeTodo}
+            />
+          ))}
+        </div>
+        {/* Column for 'In Progress' tasks */}
+        <div className="w-full">
+          <h2 className="text-xl font-bold text-zinc-200 mb-2">In Progress</h2>
+          {inProgressTodos.map((todo) => (
+            <Card
+              key={todo.id}
+              todo={todo}
+              handleCheckBox={handleCheckBox}
+              removeTodo={removeTodo}
+            />
+          ))}
+        </div>
+        {/* Column for 'Done' tasks */}
+        <div className="w-full">
+          <h2 className="text-xl font-bold text-zinc-200 mb-2">Done</h2>
+          {doneTodos.map((todo) => (
+            <Card
+              key={todo.id}
+              todo={todo}
+              handleCheckBox={handleCheckBox}
+              removeTodo={removeTodo}
+            />
+          ))}
         </div>
       </div>
     </div>

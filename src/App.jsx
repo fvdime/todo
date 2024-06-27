@@ -11,6 +11,7 @@ function App() {
   });
   
   const [selected, setSelected] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todos));
@@ -27,10 +28,6 @@ function App() {
   const updateTodo = (updatedTodo) => {
     setTodos(todos.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo)));
     setSelected(null);
-  };
-
-  const selectTodo = (todo) => {
-    setSelected(todo);
   };
 
   const handleCheckBox = (todoId, taskIndex) => {
@@ -50,20 +47,33 @@ function App() {
     );
   };
 
-  const waitingTodos = todos.filter((todo) => todo.taskStatus === "waiting");
-  const inProgressTodos = todos.filter(
+  const searchedTodos = todos.filter((todo) => (
+    todo.title.toLowerCase().includes(searchTerm.toLowerCase())
+  ))
+
+  const waitingTodos = searchedTodos.filter((todo) => todo.taskStatus === "waiting");
+  const inProgressTodos = searchedTodos.filter(
     (todo) => todo.taskStatus === "in progress"
   );
-  const doneTodos = todos.filter((todo) => todo.taskStatus === "done");
+  const doneTodos = searchedTodos.filter((todo) => todo.taskStatus === "done");
 
   return (
     <div className="min-h-screen w-full bg-zinc-900 text-white">
       <main className="w-full h-full max-w-screen-lg mx-auto md:py-8 p-4 md:px-0">
-        <article className="flex flex-col h-fit w-fit items-start justify-center text-sm text-gray-400">
-          <h1 className="text-3xl font-bold text-zinc-200 mb-2">ToDo List</h1>
-          <p>Use this template to track your personal tasks.</p>
-          <p>Click + to create a new task directly on this board.</p>
-          <p>Click an existing task to add additional context or subtasks.</p>
+        <article className="flex flex-col md:flex-row h-full w-full items-end justify-center text-sm text-gray-400 gap-4">
+          <article className="w-full">
+            <h1 className="text-3xl font-bold text-zinc-200 mb-2">ToDo List</h1>
+            <p>Use this template to track your personal tasks.</p>
+            <p>Click + to create a new task directly on this board.</p>
+            <p>Click an existing task to add additional context or subtasks.</p>
+          </article>
+          <input
+            type="text"
+            placeholder="Search tasks..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="p-1 px-4 rounded-3xl bg-zinc-700 text-white w-full"
+          />
         </article>
       </main>
       <TodoForm addTodo={addTodo} selected={selected} updateTodo={updateTodo} />

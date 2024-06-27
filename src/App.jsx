@@ -17,10 +17,10 @@ function App() {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todos));
   }, [todos]);
 
-  function addTodo(todo) {
-    setTodos([todo, ...todos]);
-  }
-
+  const addTodo = (todo) => {
+    setTodos([...todos, todo]);
+  };
+  
   const removeTodo = (todoId) => {
     setTodos(todos.filter((todo) => todo.id !== todoId));
   };

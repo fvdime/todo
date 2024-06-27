@@ -16,14 +16,18 @@ const TodoForm = ({ addTodo, selected, updateTodo }) => {
     if (selected) {
       setTitle(selected.title);
       setTasks(selected.tasks);
-      setDeadline(selected.deadline);
+      setDeadline(
+        selected.deadline
+          ? new Date(selected.deadline).toISOString().substring(0, 16)
+          : ""
+      );
       setTaskStatus(selected.taskStatus);
       setIsOpen(true);
     } else {
       setTitle("");
       setTasks([]);
       setDeadline("");
-      setTaskStatus("");
+      setTaskStatus("waiting");
     }
   }, [selected]);
 
@@ -51,9 +55,11 @@ const TodoForm = ({ addTodo, selected, updateTodo }) => {
       id: selected ? selected.id : uuid(),
       title,
       tasks,
-      deadline,
-      taskStatus,
       createdAt: new Date().toISOString(),
+      deadline: new Date(
+            new Date().getTime() + deadline * 60 * 60 * 1000
+          ).toISOString(),
+      taskStatus,
     };
 
     if (selected) {
@@ -65,7 +71,7 @@ const TodoForm = ({ addTodo, selected, updateTodo }) => {
     setTitle("");
     setTasks([]);
     setDeadline("");
-    setTaskStatus("");
+    setTaskStatus("waiting");
     setIsOpen(false);
   };
 
@@ -119,8 +125,8 @@ const TodoForm = ({ addTodo, selected, updateTodo }) => {
           } text-white p-8`}
         >
           <div className="w-full flex flex-row justify-between items-center">
-            <h4 className=""></h4>
-            <button className="" onClick={toggleSidebar}>
+            <h4></h4>
+            <button onClick={toggleSidebar}>
               <svg
                 className="w-5 h-5"
                 aria-hidden="true"
@@ -209,14 +215,28 @@ const TodoForm = ({ addTodo, selected, updateTodo }) => {
               value={taskStatus}
               onChange={(e) => setTaskStatus(e.target.value)}
             >
-              <option value="waiting">Waiting</option>
-              <option value="in progress">In Progress</option>
-              <option value="done">Done</option>
+              <option
+                value="waiting"
+                className="bg-zinc-700 text-white p-1 text-sm"
+              >
+                Waiting
+              </option>
+              <option
+                value="in progress"
+                className="bg-zinc-700 text-white p-1 text-sm"
+              >
+                In Progress
+              </option>
+              <option
+                value="done"
+                className="bg-zinc-700 text-white p-1 text-sm"
+              >
+                Done
+              </option>
             </select>
-
             <button
               type="submit"
-              className="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded text-sm px-6 py-1.5"
+              className="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded text-sm px-6 py-1.5 w-full"
             >
               {selected ? "Update" : "Add"}
             </button>

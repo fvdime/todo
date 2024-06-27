@@ -1,18 +1,17 @@
 import { useState, useEffect } from "react";
-import Todo from "./todo";
 
-const Card = ({ todo, handleCheckBox, removeTodo, setSelected }) => {
+const Card = ({ task, handleCheckBox, handleDelete, setSelected, setActiveCard, index }) => {
   const [color, setColor] = useState("");
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (todo.taskStatus !== "Done" && todo.deadline) {
+      if (task.taskStatus !== "done" && task.deadline) {
         const now = new Date();
-        const deadline = new Date(todo.deadline);
+        const deadline = new Date(task.deadline);
         const timeLeft = deadline - now;
 
         if (timeLeft <= 0) {
-          setColor("text-zinc-700"); // Past due
+          setColor("text-red-700"); // Past due
         } else if (timeLeft <= 15 * 60 * 1000) {
           setColor("text-red-700"); // Less than 15 mins left
         } else if (timeLeft <= 60 * 60 * 1000) {
@@ -24,12 +23,12 @@ const Card = ({ todo, handleCheckBox, removeTodo, setSelected }) => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [todo.deadline, todo.taskStatus]);
+  }, [task.deadline, task.taskStatus]);
 
   const calculateTimeLeft = () => {
-    if (todo.deadline) {
+    if (task.deadline) {
       const now = new Date();
-      const deadline = new Date(todo.deadline);
+      const deadline = new Date(task.deadline);
       const timeLeft = deadline - now;
 
       if (timeLeft <= 0) {
@@ -52,17 +51,22 @@ const Card = ({ todo, handleCheckBox, removeTodo, setSelected }) => {
   };
 
   return (
-    <div className="w-full border rounded shadow-sm hover:shadow-md hover:cursor-grab active:cursor-grabbing border-zinc-700">
+    <div 
+    draggable
+    onDragStart={() => setActiveCard(index)}
+    onDragEnd={() => setActiveCard(null)}
+    className="w-full border rounded shadow-sm hover:shadow-md hover:cursor-grab active:cursor-grabbing border-zinc-700 active:opacity-70 active:border-dashed" 
+    >
       <div className="px-4 py-2 w-full flex flex-row justify-between items-center rounded">
         <h1
-          onClick={() => setSelected(todo)}
+          onClick={() => setSelected(task)}
           className="font-medium rounded-t overflow-hidden truncate cursor-pointer"
         >
-          {todo.title}
+          {task.title}
         </h1>
         <button
           className="text-zinc-500 hover:text-zinc-400"
-          onClick={() => removeTodo(todo.id)}
+          onClick={() => handleDelete(task.id)}
         >
           <svg
             className="w-4 h-4"
@@ -82,23 +86,24 @@ const Card = ({ todo, handleCheckBox, removeTodo, setSelected }) => {
         </button>
       </div>
       <ul className="overflow-y-auto text-sm text-zinc-200 p-4 bg-zinc-800 overflow-x-hidden truncate">
-        {todo.tasks.map((task, index) => (
-          <li key={index}>
-            <Todo
-              todo={todo}
-              task={task}
-              index={index}
-              toggleComplete={() => handleCheckBox(todo.id, index)}
+        {task.todos.map((todo, index) => (
+          <li key={index} className="flex items-center">
+            <input
+              type="checkbox"
+              checked={todo.completed}
+              onChange={() => handleCheckBox(task.id, index)}
+              className="mr-2"
             />
+            <span className={todo.completed ? "line-through" : ""}>{todo.value}</span>
           </li>
         ))}
       </ul>
       <p
         className={`px-4 py-1.5 w-full rounded-b font-medium text-sm ${
-          todo.taskStatus === "done" ? "text-lime-700" : color
+          task.taskStatus === "done" ? "text-lime-700" : color
         }`}
       >
-        {todo.taskStatus === "done" ? "Completed" : calculateTimeLeft()}
+        {task.taskStatus === "done" ? "Completed" : calculateTimeLeft()}
       </p>
     </div>
   );

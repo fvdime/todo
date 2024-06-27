@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { v4 as uuid } from "uuid";
 
-const TodoForm = ({ addTodo, selected, updateTodo }) => {
+const TodoForm = ({ handleAdd, selected, handleUpdate }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
-  const [tasks, setTasks] = useState([]);
+  const [todos, setTodos] = useState([]);
   const [deadline, setDeadline] = useState("");
   const [taskStatus, setTaskStatus] = useState("waiting");
 
@@ -15,7 +15,7 @@ const TodoForm = ({ addTodo, selected, updateTodo }) => {
   useEffect(() => {
     if (selected) {
       setTitle(selected.title);
-      setTasks(selected.tasks);
+      setTodos(selected.todos);
       setDeadline(
         selected.deadline
           ? new Date(selected.deadline).toISOString().substring(0, 16)
@@ -25,25 +25,25 @@ const TodoForm = ({ addTodo, selected, updateTodo }) => {
       setIsOpen(true);
     } else {
       setTitle("");
-      setTasks([]);
+      setTodos([]);
       setDeadline("");
       setTaskStatus("waiting");
     }
   }, [selected]);
 
-  const handleTaskChange = (e, index) => {
-    const newTasks = [...tasks];
-    newTasks[index].value = e.target.value;
-    setTasks(newTasks);
+  const handleTodoChange = (e, index) => {
+    const newTodos = [...todos];
+    newTodos[index].value = e.target.value;
+    setTodos(newTodos);
   };
 
   const addTaskField = () => {
-    setTasks([...tasks, { value: "", completed: false }]);
+    setTodos([...todos, { value: "", completed: false }]);
   };
 
   const removeTask = (index) => {
-    const updatedTasks = tasks.filter((_, i) => i !== index);
-    setTasks(updatedTasks);
+    const updatedTasks = todos.filter((_, i) => i !== index);
+    setTodos(updatedTasks);
   };
 
   const handleSubmit = (e) => {
@@ -54,22 +54,22 @@ const TodoForm = ({ addTodo, selected, updateTodo }) => {
     const todo = {
       id: selected ? selected.id : uuid(),
       title,
-      tasks,
+      todos,
       createdAt: new Date().toISOString(),
       deadline: new Date(
-            new Date().getTime() + deadline * 60 * 60 * 1000
-          ).toISOString(),
+        new Date().getTime() + deadline * 60 * 60 * 1000
+      ).toISOString(),
       taskStatus,
     };
 
     if (selected) {
-      updateTodo(todo);
+      handleUpdate(todo);
     } else {
-      addTodo(todo);
+      handleAdd(todo);
     }
 
     setTitle("");
-    setTasks([]);
+    setTodos([]);
     setDeadline("");
     setTaskStatus("waiting");
     setIsOpen(false);
@@ -102,23 +102,6 @@ const TodoForm = ({ addTodo, selected, updateTodo }) => {
             <span>New</span>
           </button>
         </nav>
-        <header className="w-full flex flex-row justify-between items-center max-w-screen-lg mx-auto p-4 text-start gap-4">
-          <div className="w-full border-r-2 border-zinc-700">
-            <h1 className="text-sm font-medium bg-red-900 w-fit py-0.5 px-6 rounded">
-              Waiting
-            </h1>
-          </div>
-          <div className="w-full border-r-2 border-zinc-700">
-            <h1 className="text-sm font-medium bg-amber-800 w-fit py-0.5 px-6 rounded">
-              In Progress
-            </h1>
-          </div>
-          <div className="w-full">
-            <h1 className="text-sm font-medium bg-lime-800 w-fit py-0.5 px-6 rounded">
-              Done
-            </h1>
-          </div>
-        </header>
         <aside
           className={`w-96 min-h-screen bg-zinc-950 fixed top-0 left-0 z-10 duration-500 transition-transform transform ${
             isOpen ? "translate-x-0" : "-translate-x-full"
@@ -156,15 +139,15 @@ const TodoForm = ({ addTodo, selected, updateTodo }) => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
-            {tasks.map((task, index) => (
+            {todos.map((todo, index) => (
               <div key={index} className="flex items-center w-full gap-2">
                 <input
                   type="text"
                   name={`task-${index}`}
                   placeholder={`Task ${index + 1}`}
                   className="bg-transparent border-0 border-b border-zinc-500 w-full focus:ring-0"
-                  value={task.value}
-                  onChange={(e) => handleTaskChange(e, index)}
+                  value={todo.value}
+                  onChange={(e) => handleTodoChange(e, index)}
                 />
                 <button
                   type="button"

@@ -1,73 +1,72 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { v4 as uuid } from "uuid";
 
-const TodoForm = ({ addTodo }) => {
+const TodoForm = ({ addTodo, selected, updateTodo }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [todo, setTodo] = useState({
-    id: "",
-    title: "",
-    tasks: [{ value: "", completed: false }],
-    createdAt: new Date(),
-    taskStatus: "",
-    deadline: 1,
-  });
+  const [title, setTitle] = useState("");
+  const [tasks, setTasks] = useState([]);
+  const [deadline, setDeadline] = useState("");
+  const [taskStatus, setTaskStatus] = useState("waiting");
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setTodo({
-      ...todo,
-      [name]: value,
-    });
-  };
+  useEffect(() => {
+    if (selected) {
+      setTitle(selected.title);
+      setTasks(selected.tasks);
+      setDeadline(selected.deadline);
+      setTaskStatus(selected.taskStatus);
+      setIsOpen(true);
+    } else {
+      setTitle("");
+      setTasks([]);
+      setDeadline("");
+      setTaskStatus("");
+    }
+  }, [selected]);
 
   const handleTaskChange = (e, index) => {
-    const newTasks = [...todo.tasks];
-    newTasks[index] = {
-      value: e.target.value,
-      completed: newTasks[index] ? newTasks[index].completed : false,
-    };
-    setTodo({
-      ...todo,
-      tasks: newTasks,
-    });
+    const newTasks = [...tasks];
+    newTasks[index].value = e.target.value;
+    setTasks(newTasks);
   };
 
   const addTaskField = () => {
-    setTodo({
-      ...todo,
-      tasks: [...todo.tasks, { value: "", completed: false }],
-    });
+    setTasks([...tasks, { value: "", completed: false }]);
   };
 
-  const removeTodo = (index) => {
-    const updatedTasks = todo.tasks.filter((_, i) => i !== index);
-    setTodo({
-      ...todo,
-      tasks: updatedTasks,
-    });
+  const removeTask = (index) => {
+    const updatedTasks = tasks.filter((_, i) => i !== index);
+    setTasks(updatedTasks);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (todo.title.trim() && todo.tasks.some((task) => task.value.trim())) {
-      addTodo({
-        ...todo,
-        id: uuid(),
-        createdAt: new Date().toISOString(),
-      });
-      setTodo({
-        ...todo,
-        title: "",
-        tasks: [{ value: "", completed: false }],
-        createdAt: new Date(),
-        deadline: 1,
-      });
-      toggleSidebar();
+
+    if (!title) return;
+
+    const todo = {
+      id: selected ? selected.id : uuid(),
+      title,
+      tasks,
+      deadline,
+      taskStatus,
+      createdAt: new Date().toISOString(),
+    };
+
+    if (selected) {
+      updateTodo(todo);
+    } else {
+      addTodo(todo);
     }
+
+    setTitle("");
+    setTasks([]);
+    setDeadline("");
+    setTaskStatus("");
+    setIsOpen(false);
   };
 
   return (
@@ -148,13 +147,12 @@ const TodoForm = ({ addTodo }) => {
               name="title"
               placeholder="Untitled"
               className="bg-transparent border-0  border-zinc-500 w-full focus:ring-0 text-2xl"
-              value={todo.title}
-              onChange={handleInputChange}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
             />
-            {todo.tasks.map((task, index) => (
-              <>
+            {tasks.map((task, index) => (
+              <div key={index} className="flex items-center w-full gap-2">
                 <input
-                  key={index}
                   type="text"
                   name={`task-${index}`}
                   placeholder={`Task ${index + 1}`}
@@ -163,8 +161,9 @@ const TodoForm = ({ addTodo }) => {
                   onChange={(e) => handleTaskChange(e, index)}
                 />
                 <button
+                  type="button"
                   className="text-zinc-500 hover:text-zinc-400"
-                  onClick={() => removeTodo(index)}
+                  onClick={() => removeTask(index)}
                 >
                   <svg
                     className="w-4 h-4"
@@ -182,9 +181,8 @@ const TodoForm = ({ addTodo }) => {
                     />
                   </svg>
                 </button>
-              </>
+              </div>
             ))}
-
             <button
               type="button"
               className="text-blue-500 hover:text-blue-400"
@@ -198,8 +196,8 @@ const TodoForm = ({ addTodo }) => {
                 type="number"
                 name="deadline"
                 className="bg-transparent border-0 border-b border-zinc-500 w-full focus:ring-0"
-                value={todo.deadline}
-                onChange={handleInputChange}
+                value={deadline}
+                onChange={(e) => setDeadline(e.target.value)}
               />
             </label>
             <label htmlFor="taskStatus" className="block mt-4">
@@ -208,8 +206,8 @@ const TodoForm = ({ addTodo }) => {
             <select
               name="taskStatus"
               className="bg-transparent border-0 border-b border-zinc-500 w-full focus:ring-0"
-              value={todo.taskStatus}
-              onChange={handleInputChange}
+              value={taskStatus}
+              onChange={(e) => setTaskStatus(e.target.value)}
             >
               <option value="waiting">Waiting</option>
               <option value="in progress">In Progress</option>
@@ -220,24 +218,9 @@ const TodoForm = ({ addTodo }) => {
               type="submit"
               className="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded text-sm px-6 py-1.5"
             >
-              Add
+              {selected ? "Update" : "Add"}
             </button>
           </form>
-          <ul className="overflow-y-auto text-sm text-zinc-200 my-4">
-            <li>
-              <div className="flex items-center rounded hover:bg-zinc-800 py-2">
-                <input
-                  id="checkbox-item-11"
-                  type="checkbox"
-                  value=""
-                  className="w-5 h-5 text-blue focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500"
-                />
-                <label className="w-full ms-2 text-sm font-medium rounded text-zinc-300">
-                  Bonnie Green
-                </label>
-              </div>
-            </li>
-          </ul>
         </aside>
         <div
           className={`fixed top-0 left-0 w-full h-full bg-black/30 duration-500 ${

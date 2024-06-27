@@ -1,13 +1,14 @@
 import Todo from "./todo"
 
-const Card = ({ todo, handleCheckBox, removeTodo }) => {
+const Card = ({ todo, handleCheckBox, removeTodo, setSelected }) => {
   return (
     <div
     className="w-full border rounded shadow-sm hover:shadow-md hover:cursor-grab active:cursor-grabbing border-zinc-700"
   >
     <div className="px-4 py-2 w-full flex flex-row justify-between items-center">
       <h1
-        className="font-medium rounded-t overflow-hidden truncate"
+      onClick={() => setSelected(todo)}
+        className="font-medium rounded-t overflow-hidden truncate cursor-pointer"
       >
         {todo.title}
       </h1>

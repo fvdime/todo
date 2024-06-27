@@ -9,6 +9,8 @@ function App() {
     const savedTodos = localStorage.getItem(LOCAL_STORAGE_KEY);
     return savedTodos ? JSON.parse(savedTodos) : [];
   });
+  
+  const [selected, setSelected] = useState(null);
 
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todos));
@@ -20,6 +22,15 @@ function App() {
 
   const removeTodo = (todoId) => {
     setTodos(todos.filter((todo) => todo.id !== todoId));
+  };
+
+  const updateTodo = (updatedTodo) => {
+    setTodos(todos.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo)));
+    setSelected(null);
+  };
+
+  const selectTodo = (todo) => {
+    setSelected(todo);
   };
 
   const handleCheckBox = (todoId, taskIndex) => {
@@ -55,7 +66,7 @@ function App() {
           <p>Click an existing task to add additional context or subtasks.</p>
         </article>
       </main>
-      <TodoForm addTodo={addTodo} />
+      <TodoForm addTodo={addTodo} selected={selected} updateTodo={updateTodo} />
       <div className="grid grid-cols-3 gap-4 max-w-screen-lg mx-auto my-4 px-4 md:px-0">
         {/* Column for 'Waiting' tasks */}
         <div className="w-full">
@@ -66,10 +77,10 @@ function App() {
               todo={todo}
               handleCheckBox={handleCheckBox}
               removeTodo={removeTodo}
+              setSelected={setSelected}
             />
           ))}
         </div>
-        {/* Column for 'In Progress' tasks */}
         <div className="w-full">
           <h2 className="text-xl font-bold text-zinc-200 mb-2">In Progress</h2>
           {inProgressTodos.map((todo) => (
@@ -78,10 +89,10 @@ function App() {
               todo={todo}
               handleCheckBox={handleCheckBox}
               removeTodo={removeTodo}
+              setSelected={setSelected}
             />
           ))}
         </div>
-        {/* Column for 'Done' tasks */}
         <div className="w-full">
           <h2 className="text-xl font-bold text-zinc-200 mb-2">Done</h2>
           {doneTodos.map((todo) => (
@@ -90,6 +101,7 @@ function App() {
               todo={todo}
               handleCheckBox={handleCheckBox}
               removeTodo={removeTodo}
+              setSelected={setSelected}
             />
           ))}
         </div>

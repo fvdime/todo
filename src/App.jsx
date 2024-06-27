@@ -55,9 +55,6 @@ function App() {
   );
 
   const onDrop = (status, position) => {
-    alert(
-      `${activeCard} is gonna place into ${status} and at the position ${position}`
-    );
     if (activeCard === null || activeCard === undefined) return;
 
     const taskToMove = tasks[activeCard];

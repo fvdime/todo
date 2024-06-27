@@ -102,23 +102,6 @@ const TodoForm = ({ handleAdd, selected, handleUpdate }) => {
             <span>New</span>
           </button>
         </nav>
-        <header className="w-full flex flex-row justify-between items-center max-w-screen-lg mx-auto p-4 text-start gap-4">
-          <div className="w-full border-r-2 border-zinc-700">
-            <h1 className="text-sm font-medium bg-red-900 w-fit py-0.5 px-6 rounded">
-              Waiting
-            </h1>
-          </div>
-          <div className="w-full border-r-2 border-zinc-700">
-            <h1 className="text-sm font-medium bg-amber-800 w-fit py-0.5 px-6 rounded">
-              In Progress
-            </h1>
-          </div>
-          <div className="w-full">
-            <h1 className="text-sm font-medium bg-lime-800 w-fit py-0.5 px-6 rounded">
-              Done
-            </h1>
-          </div>
-        </header>
         <aside
           className={`w-96 min-h-screen bg-zinc-950 fixed top-0 left-0 z-10 duration-500 transition-transform transform ${
             isOpen ? "translate-x-0" : "-translate-x-full"

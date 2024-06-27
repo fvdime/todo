@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const Card = ({ task, handleCheckBox, handleDelete, setSelected }) => {
+const Card = ({ task, handleCheckBox, handleDelete, setSelected, setActiveCard, index }) => {
   const [color, setColor] = useState("");
 
   useEffect(() => {
@@ -51,7 +51,12 @@ const Card = ({ task, handleCheckBox, handleDelete, setSelected }) => {
   };
 
   return (
-    <div className="w-full border rounded shadow-sm hover:shadow-md hover:cursor-grab active:cursor-grabbing border-zinc-700">
+    <div 
+    draggable
+    onDragStart={() => setActiveCard(index)}
+    onDragEnd={() => setActiveCard(null)}
+    className="w-full border rounded shadow-sm hover:shadow-md hover:cursor-grab active:cursor-grabbing border-zinc-700 active:opacity-70 active:border-dashed" 
+    >
       <div className="px-4 py-2 w-full flex flex-row justify-between items-center rounded">
         <h1
           onClick={() => setSelected(task)}

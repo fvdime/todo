@@ -92,7 +92,7 @@ function App() {
         selected={selected}
         handleUpdate={handleUpdate}
       />
-      <div className="grid grid-cols-3 gap-4 max-w-screen-lg mx-auto my-4 px-4 md:px-0">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-screen-lg mx-auto my-4 px-4 md:px-0">
         <Column
           label="Waiting"
           tasks={searchedTasks}

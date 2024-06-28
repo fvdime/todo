@@ -12,6 +12,14 @@ const TodoForm = ({ handleAdd, selected, handleUpdate }) => {
     setIsOpen(!isOpen);
   };
 
+  const openNewForm = () => {
+    setTitle("");
+    setTodos([{ value: "", completed: false }]);
+    setDeadline("");
+    setTaskStatus("waiting");
+    setIsOpen(true);
+  };
+
   useEffect(() => {
     if (selected) {
       setTitle(selected.title);
@@ -56,9 +64,7 @@ const TodoForm = ({ handleAdd, selected, handleUpdate }) => {
       title,
       todos,
       createdAt: new Date().toISOString(),
-      deadline: new Date(
-        new Date().getTime() + deadline * 60 * 60 * 1000
-      ).toISOString(),
+      deadline: new Date(deadline).toISOString(),
       taskStatus,
     };
 
@@ -82,7 +88,7 @@ const TodoForm = ({ handleAdd, selected, handleUpdate }) => {
           <h1 className="font-medium text-lg">Todo</h1>
           <button
             className="inline-flex items-center justify-center gap-1 text-blue-500 hover:text-blue-400 transition duration-500 ease"
-            onClick={toggleSidebar}
+            onClick={openNewForm}
           >
             <svg
               className="w-4 h-4 rotate-45"
@@ -174,54 +180,71 @@ const TodoForm = ({ handleAdd, selected, handleUpdate }) => {
             ))}
             <button
               type="button"
-              className="text-blue-500 hover:text-blue-400"
+              className="w-full flex flex-row justify-start items-center gap-1.5 text-zinc-500 hover:text-zinc-400 border-zinc-500 hover:border-zinc-400 duration-500 ease transition-all"
               onClick={addTaskField}
             >
-              Add Task
+              <svg
+                className="w-4 h-4 rotate-45"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+              <p className="border p-1.5 w-2 border-inherit" />
+              <p className="font-medium">ToDo</p>
             </button>
             <label className="block mt-4">
-              Deadline (hours):
+              Deadline:
               <input
-                type="number"
+                type="datetime-local"
                 name="deadline"
                 className="bg-transparent border-0 border-b border-zinc-500 w-full focus:ring-0"
                 value={deadline}
                 onChange={(e) => setDeadline(e.target.value)}
               />
             </label>
-            <label htmlFor="taskStatus" className="block mt-4">
+            <label htmlFor="taskStatus" className="block mt-4 w-full">
               Status:
+              <select
+                name="taskStatus"
+                className="bg-transparent border-0 border-b border-zinc-500 w-full focus:ring-0"
+                value={taskStatus}
+                onChange={(e) => setTaskStatus(e.target.value)}
+              >
+                <option
+                  value="waiting"
+                  className="bg-zinc-700 text-white p-1 text-sm"
+                >
+                  Waiting
+                </option>
+                <option
+                  value="in progress"
+                  className="bg-zinc-700 text-white p-1 text-sm"
+                >
+                  In Progress
+                </option>
+                <option
+                  value="done"
+                  className="bg-zinc-700 text-white p-1 text-sm"
+                >
+                  Done
+                </option>
+              </select>
             </label>
-            <select
-              name="taskStatus"
-              className="bg-transparent border-0 border-b border-zinc-500 w-full focus:ring-0"
-              value={taskStatus}
-              onChange={(e) => setTaskStatus(e.target.value)}
-            >
-              <option
-                value="waiting"
-                className="bg-zinc-700 text-white p-1 text-sm"
-              >
-                Waiting
-              </option>
-              <option
-                value="in progress"
-                className="bg-zinc-700 text-white p-1 text-sm"
-              >
-                In Progress
-              </option>
-              <option
-                value="done"
-                className="bg-zinc-700 text-white p-1 text-sm"
-              >
-                Done
-              </option>
-            </select>
+
             <button
               type="submit"
               className="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded text-sm px-6 py-1.5 w-full"
             >
-              {selected ? "Update" : "Add"}
+              {selected ? "Update" : "Save"}
             </button>
           </form>
         </aside>

@@ -56,32 +56,47 @@ const Card = ({
       className="w-full border rounded shadow-sm hover:shadow-md hover:cursor-grab active:cursor-grabbing border-zinc-800 active:opacity-70 active:border-dashed"
     >
       <div className="px-4 py-2 w-full flex flex-row justify-between items-center rounded bg-zinc-900">
-        <h1
-          onClick={() => setSelected(task)}
-          className="font-medium rounded-t overflow-hidden truncate cursor-pointer"
-        >
+        <h1 className="font-medium rounded-t overflow-hidden truncate">
           {task.title}
         </h1>
-        <button
-          className="text-zinc-500 hover:text-zinc-400"
-          onClick={() => handleDelete(task.id)}
-        >
-          <svg
-            className="w-4 h-4"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
+        <div className="w-fit flex flex-row items-center justify-end gap-1">
+          <button
+            type="button"
+            className="opacity-50  hover:opacity-100 cursor-pointer"
+            onClick={() => setSelected(task)}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="20px"
+              viewBox="0 -960 960 960"
+              width="20px"
+              fill="#6b7280"
+            >
+              <path d="M160-400v-80h280v80H160Zm0-160v-80h440v80H160Zm0-160v-80h440v80H160Zm360 560v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q8 9 12.5 20t4.5 22q0 11-4 22.5T863-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className="text-zinc-500 hover:text-zinc-400"
+            onClick={() => handleDelete(task.id)}
+          >
+            <svg
+              className="w-4 h-4"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
       <ul
         className={`${task.taskStatus === "done" ? "bg-lime-700/40" : color}

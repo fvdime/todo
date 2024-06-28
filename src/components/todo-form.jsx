@@ -12,6 +12,14 @@ const TodoForm = ({ handleAdd, selected, handleUpdate }) => {
     setIsOpen(!isOpen);
   };
 
+  const openNewForm = () => {
+    setTitle("");
+    setTodos([{ value: "", completed: false }]);
+    setDeadline("");
+    setTaskStatus("waiting");
+    setIsOpen(true);
+  };
+
   useEffect(() => {
     if (selected) {
       setTitle(selected.title);
@@ -80,7 +88,7 @@ const TodoForm = ({ handleAdd, selected, handleUpdate }) => {
           <h1 className="font-medium text-lg">Todo</h1>
           <button
             className="inline-flex items-center justify-center gap-1 text-blue-500 hover:text-blue-400 transition duration-500 ease"
-            onClick={toggleSidebar}
+            onClick={openNewForm}
           >
             <svg
               className="w-4 h-4 rotate-45"

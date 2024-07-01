@@ -33,7 +33,7 @@ const taskSlice = createSlice({
     },
     getTasks: () => {},
     setTasks: (state) => {
-      state.tasks = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
+      state.tasks = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || []
       storeDataInLocalStorage(state.tasks)
     },
     clearAll: () => {},

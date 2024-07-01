@@ -4,52 +4,21 @@ import Column from "./components/column";
 import { useDispatch, useSelector } from "react-redux";
 import { getTasks, setTasks } from './store/taskSlice'
 
-const LOCAL_STORAGE_KEY = "task";
-
 function App() {
   const { tasks } = useSelector((state) => state.taskStore)
 
   const dispatch = useDispatch()
 
-  const listItems = () => {
-    let displayItems;
-    const allItemsList = tasks
-
-    return displayItems
-  }
-
-  const listItemsToShow = listItems()
-
   useEffect(() => {
     dispatch(getTasks())
   }, [dispatch])
   
-  // const [tasks, setTasks] = useState(() => {
-  //   const savedTasks = localStorage.getItem(LOCAL_STORAGE_KEY);
-  //   return savedTasks ? JSON.parse(savedTasks) : [];
-  // });
-
   const [selected, setSelected] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCard, setActiveCard] = useState(null);
 
-  useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tasks));
-  }, [tasks]);
-
-  const handleAdd = (task) => {
-    setTasks([...tasks, task]);
-  };
-
   const handleDelete = (taskId) => {
     setTasks(tasks.filter((todo) => todo.id !== taskId));
-  };
-
-  const handleUpdate = (updatedTask) => {
-    setTasks(
-      tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
-    );
-    setSelected(null);
   };
 
   const handleCheckBox = (taskId, taskIndex) => {
@@ -107,9 +76,7 @@ function App() {
         </article>
       </main>
       <TodoForm
-        handleAdd={handleAdd}
         selected={selected}
-        handleUpdate={handleUpdate}
       />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-screen-lg mx-auto my-4 px-4 md:px-0">
         <Column

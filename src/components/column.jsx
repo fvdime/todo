@@ -11,6 +11,7 @@ const Column = ({
   setActiveCard,
   onDrop,
 }) => {
+  // console.log(tasks.length() > 0 ? 'fjdksjfk': "qaaa" )
   return (
     <section className="w-full">
       <header className="w-full flex flex-row justify-between items-center max-w-screen-lg mx-auto pb-4 text-start gap-4">

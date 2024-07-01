@@ -1,14 +1,33 @@
 import { useEffect, useState } from "react";
 import TodoForm from "./components/todo-form";
 import Column from "./components/column";
+import { useDispatch, useSelector } from "react-redux";
+import { getTasks, setTasks } from './store/taskSlice'
 
 const LOCAL_STORAGE_KEY = "task";
 
 function App() {
-  const [tasks, setTasks] = useState(() => {
-    const savedTasks = localStorage.getItem(LOCAL_STORAGE_KEY);
-    return savedTasks ? JSON.parse(savedTasks) : [];
-  });
+  const { tasks } = useSelector((state) => state.taskStore)
+
+  const dispatch = useDispatch()
+
+  const listItems = () => {
+    let displayItems;
+    const allItemsList = tasks
+
+    return displayItems
+  }
+
+  const listItemsToShow = listItems()
+
+  useEffect(() => {
+    dispatch(getTasks())
+  }, [dispatch])
+  
+  // const [tasks, setTasks] = useState(() => {
+  //   const savedTasks = localStorage.getItem(LOCAL_STORAGE_KEY);
+  //   return savedTasks ? JSON.parse(savedTasks) : [];
+  // });
 
   const [selected, setSelected] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");

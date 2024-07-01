@@ -7,7 +7,7 @@ const initialState = {
 }
 
 const taskSlice = createSlice({
-  name: 'taskSore',
+  name: 'taskStore',
   initialState,
   reducers: {
     addTask: (task) => {

@@ -1,15 +1,12 @@
 import React from "react";
 import Card from "./card";
 import DropArea from "./drop-area";
+import PropTypes from "prop-types";
 
-const Column = ({
-  label,
-  tasks,
-  setSelected,
-  setActiveCard,
-  onDrop,
-}) => {
-  const filteredTasks = tasks.filter((task) => task.taskStatus === label.toLowerCase());
+const Column = ({ label, tasks, setSelected, setActiveCard, onDrop }) => {
+  const filteredTasks = tasks.filter(
+    (task) => task.taskStatus === label.toLowerCase()
+  );
 
   return (
     <section className="w-full">
@@ -50,3 +47,25 @@ const Column = ({
 };
 
 export default Column;
+
+Column.propTypes = {
+  label: PropTypes.string.isRequired,
+  tasks: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      todos: PropTypes.arrayOf(
+        PropTypes.shape({
+          value: PropTypes.string.isRequired,
+          completed: PropTypes.bool.isRequired,
+        })
+      ).isRequired,
+      createdAt: PropTypes.string.isRequired,
+      deadline: PropTypes.string.isRequired,
+      taskStatus: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  setSelected: PropTypes.func.isRequired,
+  setActiveCard: PropTypes.func.isRequired,
+  onDrop: PropTypes.func.isRequired,
+};

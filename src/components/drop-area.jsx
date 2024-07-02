@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PropTypes from 'prop-types'
 
 const DropArea = ({ onDrop }) => {
   const [showDrop, setShowDrop] = useState(false);
@@ -35,3 +36,8 @@ const DropArea = ({ onDrop }) => {
 };
 
 export default DropArea;
+
+
+DropArea.propTypes = {
+  onDrop: PropTypes.func.isRequired
+};

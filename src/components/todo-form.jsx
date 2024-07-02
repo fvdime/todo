@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { v4 as uuid } from "uuid";
 import { useDispatch } from "react-redux";
 import { addTask, editTask } from "../store/taskSlice";
+import PropTypes from "prop-types";
 
 const TodoForm = ({ selected }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,7 +11,7 @@ const TodoForm = ({ selected }) => {
   const [deadline, setDeadline] = useState("");
   const [taskStatus, setTaskStatus] = useState("waiting");
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -73,13 +74,9 @@ const TodoForm = ({ selected }) => {
     };
 
     if (selected) {
-      dispatch(
-        editTask(task)
-      )
+      dispatch(editTask(task));
     } else {
-      dispatch(
-        addTask(task)
-      )
+      dispatch(addTask(task));
     }
 
     setTitle("");
@@ -270,3 +267,7 @@ const TodoForm = ({ selected }) => {
 };
 
 export default TodoForm;
+
+TodoForm.propTypes = {
+  selected: PropTypes.bool,
+};

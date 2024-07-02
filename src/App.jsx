@@ -1,57 +1,24 @@
 import { useEffect, useState } from "react";
 import TodoForm from "./components/todo-form";
 import Column from "./components/column";
-
-const LOCAL_STORAGE_KEY = "task";
+import { useDispatch, useSelector } from "react-redux";
+import { getTasks, setFilterTask } from "./store/taskSlice";
 
 function App() {
-  const [tasks, setTasks] = useState(() => {
-    const savedTasks = localStorage.getItem(LOCAL_STORAGE_KEY);
-    return savedTasks ? JSON.parse(savedTasks) : [];
-  });
+  const { tasks } = useSelector((state) => state.taskStore);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getTasks());
+  }, [dispatch]);
 
   const [selected, setSelected] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCard, setActiveCard] = useState(null);
 
-  useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tasks));
-  }, [tasks]);
-
-  const handleAdd = (task) => {
-    setTasks([...tasks, task]);
-  };
-
-  const handleDelete = (taskId) => {
-    setTasks(tasks.filter((todo) => todo.id !== taskId));
-  };
-
-  const handleUpdate = (updatedTask) => {
-    setTasks(
-      tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
-    );
-    setSelected(null);
-  };
-
-  const handleCheckBox = (taskId, taskIndex) => {
-    setTasks(
-      tasks.map((task) => {
-        if (task.id === taskId) {
-          const updatedTodos = task.todos.map((todo, index) => {
-            if (index === taskIndex) {
-              return { ...todo, completed: !todo.completed };
-            }
-            return todo;
-          });
-          return { ...task, todos: updatedTodos };
-        }
-        return task;
-      })
-    );
-  };
-
-  const searchedTasks = tasks.filter((todo) =>
-    todo.title.toLowerCase().includes(searchTerm.toLowerCase())
+  const searchedTasks = tasks.filter((task) =>
+    task.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const onDrop = (status, position) => {
@@ -64,8 +31,8 @@ function App() {
       ...taskToMove,
       taskStatus: status,
     });
-  
-    setTasks(updatedTasks);
+
+    dispatch(setFilterTask(updatedTasks));
   };
 
   return (
@@ -87,17 +54,11 @@ function App() {
           />
         </article>
       </main>
-      <TodoForm
-        handleAdd={handleAdd}
-        selected={selected}
-        handleUpdate={handleUpdate}
-      />
+      <TodoForm selected={selected} />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-screen-lg mx-auto my-4 px-4 md:px-0">
         <Column
           label="Waiting"
           tasks={searchedTasks}
-          handleDelete={handleDelete}
-          handleCheckBox={handleCheckBox}
           setSelected={setSelected}
           setActiveCard={setActiveCard}
           onDrop={onDrop}
@@ -105,8 +66,6 @@ function App() {
         <Column
           label="In Progress"
           tasks={searchedTasks}
-          handleDelete={handleDelete}
-          handleCheckBox={handleCheckBox}
           setSelected={setSelected}
           setActiveCard={setActiveCard}
           onDrop={onDrop}
@@ -114,8 +73,6 @@ function App() {
         <Column
           label="Done"
           tasks={searchedTasks}
-          handleDelete={handleDelete}
-          handleCheckBox={handleCheckBox}
           setSelected={setSelected}
           setActiveCard={setActiveCard}
           onDrop={onDrop}

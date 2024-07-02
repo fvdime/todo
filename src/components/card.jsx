@@ -1,14 +1,26 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useDispatch } from "react-redux";
+import { checkedTodo, deleteTask } from "../store/taskSlice";
+import PropTypes from "prop-types";
 
-const Card = ({
-  task,
-  handleCheckBox,
-  handleDelete,
-  setSelected,
-  setActiveCard,
-  index,
-}) => {
+const Card = ({ task, setSelected, setActiveCard, index }) => {
   const [color, setColor] = useState("");
+
+  const dispatch = useDispatch();
+
+  const handleDelete = useCallback(
+    (id) => {
+      dispatch(deleteTask(id));
+    },
+    [dispatch]
+  );
+
+  const handleCheck = useCallback(
+    (id, todoIndex) => {
+      dispatch(checkedTodo({ id, todoIndex }));
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -107,7 +119,7 @@ const Card = ({
             <input
               type="checkbox"
               checked={todo.completed}
-              onChange={() => handleCheckBox(task.id, index)}
+              onChange={() => handleCheck(task.id, index)}
               className="mr-2"
             />
             <span className={todo.completed ? "line-through" : ""}>
@@ -128,3 +140,23 @@ const Card = ({
 };
 
 export default Card;
+
+Card.propTypes = {
+  label: PropTypes.string.isRequired,
+  task: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    todos: PropTypes.arrayOf(
+      PropTypes.shape({
+        value: PropTypes.string.isRequired,
+        completed: PropTypes.bool.isRequired,
+      })
+    ).isRequired,
+    createdAt: PropTypes.string.isRequired,
+    deadline: PropTypes.string.isRequired,
+    taskStatus: PropTypes.string.isRequired,
+  }).isRequired,
+  setSelected: PropTypes.func.isRequired,
+  setActiveCard: PropTypes.func.isRequired,
+  index: PropTypes.number.isRequired,
+};

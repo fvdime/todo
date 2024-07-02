@@ -17,29 +17,8 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCard, setActiveCard] = useState(null);
 
-  const handleDelete = (taskId) => {
-    setTasks(tasks.filter((todo) => todo.id !== taskId));
-  };
-
-  const handleCheckBox = (taskId, taskIndex) => {
-    setTasks(
-      tasks.map((task) => {
-        if (task.id === taskId) {
-          const updatedTodos = task.todos.map((todo, index) => {
-            if (index === taskIndex) {
-              return { ...todo, completed: !todo.completed };
-            }
-            return todo;
-          });
-          return { ...task, todos: updatedTodos };
-        }
-        return task;
-      })
-    );
-  };
-
-  const searchedTasks = tasks.filter((todo) =>
-    todo.title.toLowerCase().includes(searchTerm.toLowerCase())
+  const searchedTasks = tasks.filter((task) =>
+    task.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const onDrop = (status, position) => {
@@ -82,8 +61,6 @@ function App() {
         <Column
           label="Waiting"
           tasks={searchedTasks}
-          handleDelete={handleDelete}
-          handleCheckBox={handleCheckBox}
           setSelected={setSelected}
           setActiveCard={setActiveCard}
           onDrop={onDrop}
@@ -91,8 +68,6 @@ function App() {
         <Column
           label="In Progress"
           tasks={searchedTasks}
-          handleDelete={handleDelete}
-          handleCheckBox={handleCheckBox}
           setSelected={setSelected}
           setActiveCard={setActiveCard}
           onDrop={onDrop}
@@ -100,8 +75,6 @@ function App() {
         <Column
           label="Done"
           tasks={searchedTasks}
-          handleDelete={handleDelete}
-          handleCheckBox={handleCheckBox}
           setSelected={setSelected}
           setActiveCard={setActiveCard}
           onDrop={onDrop}

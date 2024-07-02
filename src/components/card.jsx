@@ -1,14 +1,24 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useDispatch } from "react-redux";
+import { checkedTodo, deleteTask } from "../store/taskSlice";
 
 const Card = ({
   task,
-  handleCheckBox,
-  handleDelete,
   setSelected,
   setActiveCard,
   index,
 }) => {
   const [color, setColor] = useState("");
+
+  const dispatch = useDispatch();
+
+  const handleDelete = useCallback((id) => {
+    dispatch(deleteTask(id));
+  }, [dispatch]);
+
+  const handleCheck = useCallback((id, todoIndex) => {
+    dispatch(checkedTodo({ id, todoIndex }));
+  }, [dispatch]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -107,7 +117,7 @@ const Card = ({
             <input
               type="checkbox"
               checked={todo.completed}
-              onChange={() => handleCheckBox(task.id, index)}
+              onChange={() => handleCheck(task.id, index)}
               className="mr-2"
             />
             <span className={todo.completed ? "line-through" : ""}>

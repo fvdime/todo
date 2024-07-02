@@ -10,6 +10,8 @@ import {
   setClearAll,
   getTasks,
   setTasks,
+  checkedTodo,
+  setCheckedTodo,
 } from "../store/taskSlice";
 
 function* onAddTaskAsync(action) {
@@ -26,6 +28,10 @@ function* onGetTasksAsync() {
 
 function* onDeleteTaskAsync(action) {
   yield put(setDeleteTask(action.payload));
+}
+
+function* onCheckedTodoAsync(action) {
+  yield put(setCheckedTodo(action.payload));
 }
 
 function* onClearAllAsync() {
@@ -52,10 +58,15 @@ function* watchClearAll() {
   yield takeLatest(clearAll.type, onClearAllAsync);
 }
 
+function* watchCheckedTodo() {
+  yield takeLatest(checkedTodo.type, onCheckedTodoAsync);
+}
+
 export const taskSagas = [
   fork(watchAddTask),
   fork(watchEditTask),
   fork(watchGetTasks),
   fork(watchDeleteTask),
   fork(watchClearAll),
+  fork(watchCheckedTodo),
 ];

@@ -36,6 +36,20 @@ const taskSlice = createSlice({
       state.tasks = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || []
       storeDataInLocalStorage(state.tasks)
     },
+    checkedTodo: (task) => {
+      return task;
+    },
+    setCheckedTodo: (state, action) => {
+      const { id, todoIndex } = action.payload;
+      state.tasks = state.tasks.map(task => {
+        if (task.id === id) {
+          const updatedTodos = task.todos.map((todo, index) => index === todoIndex ? { ...todo, completed: !todo.completed } : todo);
+          return { ...task, todos: updatedTodos };
+        }
+        return task;
+      });
+      storeDataInLocalStorage(state.tasks);
+    },
     clearAll: () => {},
     setClearAll: (state) => {
       state.tasks = []
@@ -55,5 +69,7 @@ export const {
   setClearAll,
   getTasks,
   setTasks,
+  checkedTodo,
+  setCheckedTodo
 } = taskSlice.actions;
 export default taskSlice.reducer

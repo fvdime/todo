@@ -5,13 +5,12 @@ import DropArea from "./drop-area";
 const Column = ({
   label,
   tasks,
-  handleDelete,
-  handleCheckBox,
   setSelected,
   setActiveCard,
   onDrop,
 }) => {
-  // console.log(tasks.length() > 0 ? 'fjdksjfk': "qaaa" )
+  const filteredTasks = tasks.filter((task) => task.taskStatus === label.toLowerCase());
+
   return (
     <section className="w-full">
       <header className="w-full flex flex-row justify-between items-center max-w-screen-lg mx-auto pb-4 text-start gap-4">
@@ -32,14 +31,12 @@ const Column = ({
         </div>
       </header>
       <DropArea onDrop={() => onDrop(label.toLowerCase(), 0)} />
-      {tasks.map(
+      {filteredTasks.map(
         (task, index) =>
           task.taskStatus === label.toLowerCase() && (
             <React.Fragment key={index}>
               <Card
                 task={task}
-                handleDelete={handleDelete}
-                handleCheckBox={handleCheckBox}
                 setSelected={setSelected}
                 setActiveCard={setActiveCard}
                 index={index}

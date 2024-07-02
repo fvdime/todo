@@ -2,17 +2,17 @@ import { useEffect, useState } from "react";
 import TodoForm from "./components/todo-form";
 import Column from "./components/column";
 import { useDispatch, useSelector } from "react-redux";
-import { getTasks, setTasks } from './store/taskSlice'
+import { getTasks, setFilterTask } from "./store/taskSlice";
 
 function App() {
-  const { tasks } = useSelector((state) => state.taskStore)
+  const { tasks } = useSelector((state) => state.taskStore);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getTasks())
-  }, [dispatch])
-  
+    dispatch(getTasks());
+  }, [dispatch]);
+
   const [selected, setSelected] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCard, setActiveCard] = useState(null);
@@ -31,8 +31,8 @@ function App() {
       ...taskToMove,
       taskStatus: status,
     });
-  
-    setTasks(updatedTasks);
+
+    dispatch(setFilterTask(updatedTasks));
   };
 
   return (
@@ -54,9 +54,7 @@ function App() {
           />
         </article>
       </main>
-      <TodoForm
-        selected={selected}
-      />
+      <TodoForm selected={selected} />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-screen-lg mx-auto my-4 px-4 md:px-0">
         <Column
           label="Waiting"
